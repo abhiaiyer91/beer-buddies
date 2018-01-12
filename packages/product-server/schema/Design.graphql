@@ -1,0 +1,22 @@
+type Design {
+  id: ID!
+  designer: Designer
+  url: String
+  createdAt: Float
+  likes: [Like]
+  likeCount: Int
+  totalLikes: Int
+}
+
+type Designer {
+  id: ID!
+  name: String
+  firstName: String
+  lastName: String
+  avatar: String
+}
+
+type Like {
+  customerId: ID
+  vote: Int
+}

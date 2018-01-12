@@ -1,0 +1,12 @@
+{
+  "name": "eventador-client",
+  "private": true,
+  "dependencies": {
+    "graphql-redis-subscriptions": "^1.4.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-plugin-inline-import": "^2.0.6",
+    "babel-preset-env": "^1.6.1"
+  }
+}
