@@ -1,5 +1,6 @@
 type Query {
   beers(folderName: String): [Beer]
+  beerCounts(folderName: String): [Count]
 }
 
 type Mutation {

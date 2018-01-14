@@ -15,7 +15,7 @@ function Page({ folderName, setFolderName }) {
     <Container>
       <Row>
         <AutoCol>
-          <Folders setFolderName={setFolderName} folderName={folderName} />
+          <Folders setFolderName={setFolderName} currentFolderName={folderName} />
         </AutoCol>
         <ColItem>
           <BeersList folderName={folderName} />

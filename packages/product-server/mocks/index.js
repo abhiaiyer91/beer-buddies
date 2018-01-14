@@ -50,18 +50,34 @@ function beer(index, number, folderName) {
 }
 
 const likeCountEvent = beerId => `Likes.${beerId}.LIKE_COUNT_CHANGED`;
+const beerCounts = {
+  Coors: 40,
+  BudLight: 30,
+  Fosters: 10,
+  Corona: 10,
+};
 
 const beerMap = {
-  Coors: createTypes(beer, 40, 'Coors'),
-  BudLight: createTypes(beer, 30, 'BudLight Lime'),
-  Fosters: createTypes(beer, 10, 'Fosters'),
-  Corona: createTypes(beer, 10, 'Corona'),
+  Coors: createTypes(beer, beerCounts.Coors, 'Coors'),
+  BudLight: createTypes(beer, beerCounts.BudLight, 'BudLight'),
+  Fosters: createTypes(beer, 10, beerCounts.Fosters),
+  Corona: createTypes(beer, 10, beerCounts.Corona),
 };
 
 export default {
   Query: () => ({
     beers: (root, { folderName = 'Coors' }) => {
       return beerMap[folderName];
+    },
+    beerCounts: () => {
+      const counts = Object.keys(beerCounts).map((id) => {
+        return {
+          folderName: id,
+          count: beerCounts[id],
+        };
+      });
+
+      return counts;
     },
   }),
   Mutation: () => ({

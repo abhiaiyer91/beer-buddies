@@ -1,5 +1,9 @@
 import React from 'react';
 import styled from 'react-emotion';
+import { compose, mapProps } from 'recompose';
+import { graphql } from 'react-apollo';
+
+import { beerCountsQuery } from '../queries';
 
 const FolderCard = styled('div')`
   border-radius: 2px;
@@ -48,25 +52,43 @@ const beers = [
   },
 ];
 
-export default function Folders({ folderName, setFolderName }) {
+function Folders({
+  currentFolderName, folders = [], setFolderName, loading,
+}) {
   return (
     <FolderCard>
       <MenuList>
-        {beers.map(({ name }) => {
-          return (
-            <ListItem key={name}>
-              <ListButton
-                onClick={function () {
-                  return setFolderName(name);
-                }}
-                isActive={folderName === name}
-              >
-                {name}
-              </ListButton>
-            </ListItem>
-          );
-        })}
+        {loading ? (
+          <p>loading</p>
+        ) : (
+          folders.map(({ folderName, count }) => {
+            return (
+              <ListItem key={folderName}>
+                <ListButton
+                  onClick={function set() {
+                    return setFolderName(folderName);
+                  }}
+                  isActive={currentFolderName === folderName}
+                >
+                  {folderName}{' '}
+                  {count}
+                </ListButton>
+              </ListItem>
+            );
+          })
+        )}
       </MenuList>
     </FolderCard>
   );
 }
+
+export default compose(
+  graphql(beerCountsQuery),
+  mapProps(({ data, ...rest }) => {
+    return {
+      folders: data && data.beerCounts,
+      loading: data && data.loading,
+      ...rest,
+    };
+  }),
+)(Folders);

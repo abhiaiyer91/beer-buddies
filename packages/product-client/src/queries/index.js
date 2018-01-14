@@ -15,6 +15,15 @@ fragment BeerFragment on Beer {
 }
 `;
 
+export const beerCountsQuery = gql`
+  query beerCounts {
+    beerCounts {
+      folderName
+      count
+    }
+  }
+`;
+
 export const beersQuery = gql`
   ${beerFragment}
   query beers($folderName: String!) {
@@ -25,10 +34,10 @@ export const beersQuery = gql`
 `;
 
 export const likeCountSubscription = gql`
-    subscription likeCount($beerId: ID!){
-      likeCount(beerId: $beerId){
-        id
-        newLikeCount
-      }
+  subscription likeCount($beerId: ID!) {
+    likeCount(beerId: $beerId) {
+      id
+      newLikeCount
     }
+  }
 `;
