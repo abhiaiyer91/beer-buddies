@@ -1,3 +1,0 @@
-type HelloWorld {
-  message: String!
-}

@@ -5,7 +5,10 @@
   "dependencies": {
     "apollo-cache-inmemory": "^1.1.4",
     "apollo-client": "^2.0.4",
+    "apollo-link": "^1.0.7",
     "apollo-link-http": "^1.3.2",
+    "apollo-link-ws": "^1.0.4",
+    "apollo-utilities": "^1.0.4",
     "emotion": "^8.0.12",
     "graphql": "^0.12.3",
     "graphql-tag": "^2.6.1",
@@ -14,9 +17,18 @@
     "react-dom": "^16.2.0",
     "react-emotion": "^8.0.12",
     "react-scripts": "1.0.17",
-    "recompose": "^0.26.0"
+    "recompose": "^0.26.0",
+    "subscriptions-transport-ws": "^0.9.5"
   },
-  "proxy": "http://localhost:4000/graphql",
+  "proxy": {
+    "/graphql": {
+      "target": "http://localhost:4000/graphql"
+    },
+    "/graphql/subscriptions": {
+      "target": "ws://localhost:5000/graphql/subscriptions",
+      "ws": true
+    }
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",

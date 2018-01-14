@@ -11,11 +11,11 @@ export default {
       subscribe: withFilter(
         (_, args) => {
           console.log(args);
-          return pubsub.asyncIterator(`${LIKE_COUNT_CHANGED}_${args.designId}`);
+          return pubsub.asyncIterator(`Likes.${args.beerId}.${LIKE_COUNT_CHANGED}`);
         },
         (payload, variables) => {
           console.log(payload, variables);
-          return payload.designId === variables.designId;
+          return payload.id === variables.beerId;
         },
       ),
     },

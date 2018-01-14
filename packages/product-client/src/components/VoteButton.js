@@ -1,19 +1,18 @@
-import React from 'react';
 import styled from 'react-emotion';
 import { compose, branch, withHandlers } from 'recompose';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
-import { designQuery } from '../queries';
+import { beersQuery } from '../queries';
 
 const upvoteMutation = gql`
-  mutation upvoteMutation($designId: ID!) {
-    upvote(designId: $designId)
+  mutation upvoteMutation($beerId: ID!) {
+    upvote(beerId: $beerId)
   }
 `;
 
 const downvoteMutation = gql`
-  mutation downvoteMutation($designId: ID!) {
-    downvote(designId: $designId)
+  mutation downvoteMutation($beerId: ID!) {
+    downvote(beerId: $beerId)
   }
 `;
 
@@ -21,28 +20,28 @@ const Button = styled('button')`
   border-radius: 2px;
   background-color: ${props => props.color};
   border: 1px solid ${props => props.color};
-  color: white
+  color: white;
 `;
 
 export default compose(
   branch(({ isUpvote }) => !!isUpvote, graphql(upvoteMutation), graphql(downvoteMutation)),
   withHandlers({
-    onClick: ({ mutate, designId, isUpvote }) => () =>
+    onClick: ({ mutate, beerId, isUpvote }) => () => {
       mutate({
         variables: {
-          designId,
+          beerId: `${beerId}`,
         },
         update: (client) => {
           try {
             const dataObject = client.readQuery({
-              query: designQuery,
+              query: beersQuery,
             });
 
-            const designs = dataObject && dataObject.designs;
+            const beers = dataObject && dataObject.beers;
             const voteValue = isUpvote ? 1 : -1;
 
-            const designsMapped = designs.map(({ id, likeCount, ...rest }) => {
-              if (id === designId) {
+            const beersMapped = beers.map(({ id, likeCount, ...rest }) => {
+              if (id === beerId) {
                 likeCount += voteValue;
               }
 
@@ -53,10 +52,10 @@ export default compose(
               };
             });
 
-            dataObject.designs = designsMapped;
+            dataObject.beers = beersMapped;
 
             return client.writeQuery({
-              query: designQuery,
+              query: beersQuery,
               data: dataObject,
             });
           } catch (e) {
@@ -65,6 +64,7 @@ export default compose(
         },
       }).catch((e) => {
         alert('YOU DONE FUCKED UP');
-      }),
+      });
+    },
   }),
 )(Button);

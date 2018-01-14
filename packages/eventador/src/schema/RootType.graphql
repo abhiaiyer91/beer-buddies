@@ -1,8 +1,9 @@
 type Subscription {
-  likeCount(designId: ID!): Result
+  likeCount(beerId: ID!): Result
 }
 
 type Result {
+  id: ID
   newLikeCount: Int
 }
 

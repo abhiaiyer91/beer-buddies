@@ -1,9 +1,7 @@
-import HelloWorld from './HelloWorld.graphql';
-import Design from './Design.graphql';
+import Beer from './Beer.graphql';
 import RootType from './RootType.graphql';
 
 export default [
-  HelloWorld,
-  Design,
+  Beer,
   RootType,
 ];

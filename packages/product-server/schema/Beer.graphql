@@ -1,6 +1,7 @@
-type Design {
+type Beer {
   id: ID!
-  designer: Designer
+  creator: Creator
+  brand: Brand
   url: String
   createdAt: Float
   likes: [Like]
@@ -8,7 +9,11 @@ type Design {
   totalLikes: Int
 }
 
-type Designer {
+type Brand {
+  name: String
+}
+
+type Creator {
   id: ID!
   name: String
   firstName: String

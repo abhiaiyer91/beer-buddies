@@ -1,5 +1,7 @@
 {
 	"devDependencies": {
+		"@workpop/eslint-config-workpop": "^1.0.0",
+		"babel-eslint": "^8.2.1",
 		"eslint": "^4.14.0",
 		"eslint-config-airbnb": "^16.1.0",
 		"eslint-plugin-import": "^2.8.0",

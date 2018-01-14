@@ -3,8 +3,6 @@ import bodyParser from 'body-parser';
 import { graphqlExpress, graphiqlExpress } from 'apollo-server-express';
 import schema from './schema';
 
-import './schema';
-
 const PORT = 4000;
 
 const app = express();
