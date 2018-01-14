@@ -5,10 +5,10 @@ const faker = require('faker');
 
 const pubsub = createRedisPublisher();
 
-function createTypes(factory, number = 10) {
+function createTypes(factory, number = 10, folderName) {
   const rangeItems = range(number);
 
-  return rangeItems.map(item => factory(item));
+  return rangeItems.map(item => factory(item, number, folderName));
 }
 
 function like() {
@@ -18,11 +18,11 @@ function like() {
   };
 }
 
-function beerCreator(index) {
+function beerCreator(index, number, folderName) {
   const firstName = faker.name.firstName();
   const lastName = faker.name.lastName();
   return {
-    id: `${index}_CREATOR`,
+    id: `${index}_CREATOR_${folderName}`,
     name: `${firstName} ${lastName}`,
     firstName,
     lastName,
@@ -30,17 +30,17 @@ function beerCreator(index) {
   };
 }
 
-function beer(index) {
-  const likes = createTypes(like);
+function beer(index, number, folderName) {
+  const likes = createTypes(like, undefined, folderName);
 
   const likeCount = reduce(likes, (memo, currentVal) => currentVal.vote + memo, 0);
 
   return {
-    creator: beerCreator(index),
+    creator: beerCreator(index, number, folderName),
     brand: {
       name: faker.company.companyName(),
     },
-    id: `${index}_BEER`,
+    id: `${index}_BEER_${folderName}`,
     url: faker.random.image(),
     createdAt: faker.date.recent(),
     likes,
@@ -51,16 +51,25 @@ function beer(index) {
 
 const likeCountEvent = beerId => `Likes.${beerId}.LIKE_COUNT_CHANGED`;
 
+const beerMap = {
+  Coors: createTypes(beer, 40, 'Coors'),
+  BudLight: createTypes(beer, 30, 'BudLight Lime'),
+  Fosters: createTypes(beer, 10, 'Fosters'),
+  Corona: createTypes(beer, 10, 'Corona'),
+};
+
 export default {
   Query: () => ({
-    beers: root => createTypes(beer),
+    beers: (root, { folderName = 'Coors' }) => {
+      return beerMap[folderName];
+    },
   }),
   Mutation: () => ({
     upvote: (root, { beerId }) => {
       pubsub.publish(likeCountEvent(beerId), {
         id: beerId,
         likeCount: {
-          newLikeCount: 2,
+          newLikeCount: faker.random.number(),
         },
       });
       return true;

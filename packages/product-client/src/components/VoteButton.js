@@ -2,7 +2,7 @@ import styled from 'react-emotion';
 import { compose, branch, withHandlers } from 'recompose';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
-import { beersQuery } from '../queries';
+import { beerFragment } from '../queries';
 
 const upvoteMutation = gql`
   mutation upvoteMutation($beerId: ID!) {
@@ -26,37 +26,30 @@ const Button = styled('button')`
 export default compose(
   branch(({ isUpvote }) => !!isUpvote, graphql(upvoteMutation), graphql(downvoteMutation)),
   withHandlers({
-    onClick: ({ mutate, beerId, isUpvote }) => () => {
+    onClick: ({
+      mutate, onResult, beerId, isUpvote,
+    }) => () => {
       mutate({
         variables: {
           beerId: `${beerId}`,
         },
         update: (client) => {
           try {
-            const dataObject = client.readQuery({
-              query: beersQuery,
+            const dataObject = client.readFragment({
+              id: `Beer:${beerId}`,
+              fragment: gql(beerFragment),
             });
 
-            const beers = dataObject && dataObject.beers;
+            const likeCount = dataObject && dataObject.likeCount;
             const voteValue = isUpvote ? 1 : -1;
+            const newLikeCount = likeCount + voteValue;
 
-            const beersMapped = beers.map(({ id, likeCount, ...rest }) => {
-              if (id === beerId) {
-                likeCount += voteValue;
-              }
-
-              return {
-                id,
-                likeCount,
-                ...rest,
-              };
-            });
-
-            dataObject.beers = beersMapped;
-
-            return client.writeQuery({
-              query: beersQuery,
-              data: dataObject,
+            onResult({
+              data: {
+                likeCount: {
+                  newLikeCount,
+                },
+              },
             });
           } catch (e) {
             console.error(e);

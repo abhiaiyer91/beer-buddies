@@ -17,8 +17,8 @@ fragment BeerFragment on Beer {
 
 export const beersQuery = gql`
   ${beerFragment}
-  query beers {
-    beers {
+  query beers($folderName: String!) {
+    beers(folderName: $folderName) {
       ...BeerFragment
     }
   }

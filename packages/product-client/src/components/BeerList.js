@@ -35,6 +35,11 @@ function withSubscribe(subscriptionDocument, optionsObject) {
         };
       },
     }),
+    lifecycle({
+      componentDidMount() {
+        return this.props.subscribe();
+      },
+    }),
   );
 }
 
@@ -74,13 +79,8 @@ const SubscriptionContainer = compose(
       };
     },
   }),
-  lifecycle({
-    componentDidMount() {
-      return this.props.subscribe();
-    },
-  }),
-)(({ children }) => {
-  return children;
+)(({ children, onResult }) => {
+  return children({ onResult });
 });
 
 function BeersList({ loading, beers = [], subscribeToMore }) {
@@ -94,28 +94,32 @@ function BeersList({ loading, beers = [], subscribeToMore }) {
  url, brand, id, likeCount = 0,
 }) => (
   <SubscriptionContainer id={id}>
-    <Col key={`${id}+BEER`}>
-      <Card>
-        <Row>
-          <ColItem>{brand && brand.name}</ColItem>
-          <ColItem>
-            <p>Like Count: {likeCount}</p>
-            <VoteButton isUpvote beerId={id} color="blue">
-                    Upvote
-            </VoteButton>
-            <VoteButton beerId={id} color="red">
-                    Downvote
-            </VoteButton>
-          </ColItem>
+    {({ onResult }) => {
+            return (
+              <Col key={`${id}+BEER`}>
+                <Card>
+                  <Row>
+                    <ColItem>{brand && brand.name}</ColItem>
+                    <ColItem>
+                      <p>Like Count: {likeCount}</p>
+                      <VoteButton onResult={onResult} isUpvote beerId={id} color="blue">
+                        Upvote
+                      </VoteButton>
+                      <VoteButton onResult={onResult} beerId={id} color="red">
+                        Downvote
+                      </VoteButton>
+                    </ColItem>
 
-          <ColItem>
-            <ImgContainer>
-              <Img src={url} />
-            </ImgContainer>
-          </ColItem>
-        </Row>
-      </Card>
-    </Col>
+                    <ColItem>
+                      <ImgContainer>
+                        <Img src={url} />
+                      </ImgContainer>
+                    </ColItem>
+                  </Row>
+                </Card>
+              </Col>
+            );
+          }}
   </SubscriptionContainer>
       ))}
     </Row>
@@ -125,11 +129,17 @@ function BeersList({ loading, beers = [], subscribeToMore }) {
 export default compose(
   graphql(beersQuery, {
     name: 'beersList',
+    options: ({ folderName = 'Coors' }) => {
+      return {
+        variables: {
+          folderName,
+        },
+      };
+    },
   }),
   mapProps(({ beersList, ...rest }) => ({
     beers: (beersList && beersList.beers) || [],
     loading: beersList && beersList.loading,
-    subscribeToMore: beersList.subscribeToMore,
     ...rest,
   })),
 )(BeersList);

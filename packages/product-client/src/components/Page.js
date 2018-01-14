@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'react-emotion';
+import { compose, withHandlers, withState } from 'recompose';
 import BeersList from './BeerList';
 import { Row, AutoCol, ColItem } from './Flex';
 import Folders from './Folders';
@@ -9,17 +10,28 @@ const Container = styled('main')`
   margin: 0 auto;
 `;
 
-export default function Page() {
+function Page({ folderName, setFolderName }) {
   return (
     <Container>
       <Row>
         <AutoCol>
-          <Folders />
+          <Folders setFolderName={setFolderName} folderName={folderName} />
         </AutoCol>
         <ColItem>
-          <BeersList />
+          <BeersList folderName={folderName} />
         </ColItem>
       </Row>
     </Container>
   );
 }
+
+export default compose(
+  withState('folderName', 'setFolder', 'Coors'),
+  withHandlers({
+    setFolderName: ({ setFolder }) => {
+      return (folderName) => {
+        return setFolder(folderName);
+      };
+    },
+  }),
+)(Page);
