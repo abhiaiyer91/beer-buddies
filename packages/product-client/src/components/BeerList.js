@@ -1,6 +1,7 @@
 import React from 'react';
 import gql from 'graphql-tag';
-import { compose, mapProps, lifecycle, withHandlers } from 'recompose';
+import { withSubscribe } from 'recompose-apollo';
+import { compose, mapProps, withHandlers } from 'recompose';
 import styled from 'react-emotion';
 import { graphql, withApollo } from 'react-apollo';
 import { beersQuery, likeCountSubscription, beerFragment } from '../queries';
@@ -21,27 +22,6 @@ const Img = styled('img')`
   height: auto;
   max-width: 100px;
 `;
-
-function withSubscribe(subscriptionDocument, optionsObject) {
-  return compose(
-    withApollo,
-    withHandlers({
-      subscribe: ({ client, onResult, ...rest }) => {
-        const optionsFn = optionsObject && optionsObject.options;
-        return () => {
-          client.subscribe({ query: subscriptionDocument, ...optionsFn(rest) }).subscribe({
-            next: onResult,
-          });
-        };
-      },
-    }),
-    lifecycle({
-      componentDidMount() {
-        return this.props.subscribe();
-      },
-    }),
-  );
-}
 
 const SubscriptionContainer = compose(
   withApollo,
