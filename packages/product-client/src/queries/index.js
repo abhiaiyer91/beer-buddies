@@ -1,5 +1,11 @@
 import gql from 'graphql-tag';
 
+export const moveMutation = gql`
+  mutation moveToFolder($folderName: String!, $beerIds: [ID!]) {
+    moveToFolder(folderName: $folderName, beerIds: $beerIds)
+  }
+`;
+
 export const beerFragment = `
 fragment BeerFragment on Beer {
   id

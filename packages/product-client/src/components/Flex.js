@@ -17,5 +17,6 @@ export const ColItem = styled('div')`
 `;
 
 export const AutoCol = styled('div')`
-  flex: 0 0 auto;
+  flex: 0 0 ${props => props.basis};
+  align-self: ${props => props.alignSelf || 'flex-start'}
 `;

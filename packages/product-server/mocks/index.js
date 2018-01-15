@@ -50,6 +50,10 @@ function beer(index, number, folderName) {
 }
 
 const likeCountEvent = beerId => `Likes.${beerId}.LIKE_COUNT_CHANGED`;
+
+const folderCountsEvent = (folderName) => {
+  return `Folders.${folderName}.FOLDER_COUNT_CHANGED`;
+}
 const beerCounts = {
   Coors: 40,
   BudLight: 30,
@@ -81,6 +85,15 @@ export default {
     },
   }),
   Mutation: () => ({
+    moveToFolder: (root, { folderName }) => {
+      pubsub.publish(folderCountsEvent(folderName), {
+        folderCounts: {
+          folderName,
+          count: faker.random.number(),
+        },
+      });
+      return true;
+    },
     upvote: (root, { beerId }) => {
       pubsub.publish(likeCountEvent(beerId), {
         id: beerId,

@@ -1,5 +1,11 @@
 type Subscription {
   likeCount(beerId: ID!): Result
+  folderCounts(folderName: String): FolderCountResult
+}
+
+type FolderCountResult {
+  folderName: String
+  count: Int
 }
 
 type Result {

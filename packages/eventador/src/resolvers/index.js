@@ -4,9 +4,16 @@ import createRedisPublisher from '../../../eventador-client/src';
 const pubsub = createRedisPublisher();
 
 const LIKE_COUNT_CHANGED = 'LIKE_COUNT_CHANGED';
+const FOLDER_COUNT_CHANGED = 'FOLDER_COUNT_CHANGED';
 
 export default {
   Subscription: {
+    folderCounts: {
+      subscribe: (_, args) => {
+        console.log(args);
+        return pubsub.asyncIterator(`Folders.${args.folderName}.${FOLDER_COUNT_CHANGED}`);
+      }
+    },
     likeCount: {
       subscribe: withFilter(
         (_, args) => {

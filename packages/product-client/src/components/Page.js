@@ -10,12 +10,18 @@ const Container = styled('main')`
   margin: 0 auto;
 `;
 
+const LeftAside = styled('div')`
+  max-width: 300px;
+`;
+
 function Page({ folderName, setFolderName }) {
   return (
     <Container>
       <Row>
-        <AutoCol>
-          <Folders setFolderName={setFolderName} currentFolderName={folderName} />
+        <AutoCol basis="300px">
+          <LeftAside>
+            <Folders setFolderName={setFolderName} currentFolderName={folderName} />
+          </LeftAside>
         </AutoCol>
         <ColItem>
           <BeersList folderName={folderName} />

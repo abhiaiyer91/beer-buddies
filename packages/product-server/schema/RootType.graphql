@@ -6,4 +6,5 @@ type Query {
 type Mutation {
   upvote(beerId: ID): Boolean
   downvote(beerId: ID): Boolean
+  moveToFolder(beerIds: [ID!], folderName: String!): Boolean
 }
